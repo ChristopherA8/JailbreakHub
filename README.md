@@ -1,2 +1,2 @@
 # BluBot
-## BluDood's Discord Bot
+BluDood's Discord Bot
