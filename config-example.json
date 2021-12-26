@@ -1,0 +1,11 @@
+{
+    "clientId": "ID of your Discord Bot's client",
+    "guildId": "ID of your Discord Server",
+    "token": "Your Discord Bot's Token",
+    "channels": {
+        "logs": "Log channel ID"
+    },
+    "allowRoles": [
+        "Array of ID of roles that should be allowed to use moderation commands"
+    ]
+}
