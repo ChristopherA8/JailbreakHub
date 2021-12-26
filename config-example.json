@@ -1,4 +1,5 @@
 {
+    "server_name": "Name of your server",
     "clientId": "ID of your Discord Bot's client",
     "guildId": "ID of your Discord Server",
     "token": "Your Discord Bot's Token",
