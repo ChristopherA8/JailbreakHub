@@ -5,6 +5,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const fetch = require('node-fetch')
 const triggers = require("./triggers.json")
 const censored = require('./censored.json')
+const deployCommands = require('./deploy-commands')
 
 const client = new Client({
 	intents: [
@@ -25,6 +26,9 @@ for (const file of commandFiles) {
 client.once('ready', async c => {
 	console.log(`Ready! Logged in as ${c.user.tag}`);
 	client.user.setActivity(config.server_name, { type: 'WATCHING' })
+
+	// Setup slash commands
+	deployCommands();
 });
 
 client.on('unhandledRejection', error => {
