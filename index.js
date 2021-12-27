@@ -5,6 +5,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const fetch = require('node-fetch')
 const triggers = require("./triggers.json")
 const censored = require('./censored.json')
+const deployCommands = require('./deploy-commands')
 
 const client = new Client({
 	intents: [
@@ -25,6 +26,9 @@ for (const file of commandFiles) {
 client.once('ready', async c => {
 	console.log(`Ready! Logged in as ${c.user.tag}`);
 	client.user.setActivity(config.server_name, { type: 'WATCHING' })
+
+	// Setup slash commands
+	deployCommands();
 });
 
 client.on('unhandledRejection', error => {
@@ -42,7 +46,7 @@ client.on('error', error => {
 // message action
 client.on('messageCreate', async message => {
 	if (message.author.bot) return
-    if (censored.some(r=> message.content.split(" ").includes(r))) {
+    if (censored.some(r => message.content.split(" ").includes(r))) {
 		const embed = {
 			color: "#ff8000",
 			title: `Deleted message with censored word from ${message.author.username}`,
@@ -65,7 +69,7 @@ client.on('messageCreate', async message => {
 				}
 			]
 		};
-		message.guild.channels.cache.get(config.channels.logs).send({embeds: [embed]})
+		message.guild.channels.cache.get(config.channels.logs).send({ embeds: [embed] })
 		return message.delete();
 	}
 
