@@ -1,8 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { GuildMember, Client } = require('discord.js');
-const fetch = require('node-fetch');
 const config = require('../config.json');
-const axios = require('axios')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -50,14 +47,9 @@ module.exports = {
 				}
 			]
 		};
-		axios.patch(`https://discord.com/api/v9/guilds/${config.guildId}/members/${target.id}`, {
-			'communication_disabled_until': `${timeoutUntil}`
-		}, {
-			headers: {
-				'Authorization': `Bot ${config.token}`,
-				'Content-Type': 'application/json'
-			}
-		});
+
+		await member.timeout(timeoutUntil, reason);
+		
 		interaction.guild.channels.cache.get(config.channels.logs).send({embeds: [embed]})
         member.send(`You were timed out in ${config.server_name}!\nReason: ${reason}\nDuration: ${interaction.options.getNumber('duration')} day(s)`)
 		return interaction.reply({ content: `**Timed out ${target.username}**\nReason: ${reason}\nDuration: ${interaction.options.getNumber('duration')} day(s)`});
