@@ -32,7 +32,7 @@ client.once('ready', async c => {
 });
 
 client.on('unhandledRejection', error => {
-    console.log(error);
+	console.log(error);
 });
 
 client.on('shardError', error => {
@@ -46,7 +46,7 @@ client.on('error', error => {
 // message action
 client.on('messageCreate', async message => {
 	if (message.author.bot) return
-    if (censored.some(r => message.content.split(" ").includes(r))) {
+	if (censored.some(r => message.content.split(" ").includes(r))) {
 		const embed = {
 			color: "#ff8000",
 			title: `Deleted message with censored word from ${message.author.username}`,
@@ -74,8 +74,60 @@ client.on('messageCreate', async message => {
 	}
 
 	triggers.forEach(element => {
-       		if (message.content.toLowerCase() == element.trigger) return message.reply(element.response);
+		if (message.content.toLowerCase() == element.trigger) return message.reply(element.response);
 	});
+
+	if (message.content.startsWith("[[") && message.content.includes("]]")) {
+		var tweak = String(message.content).replace("[[", "").split("]]")[0]
+		var page = String(message.content).replace("[[", "").split("]] ")[1] || 1
+		async function getData() {
+			const data = await fetch(`https://api.parcility.co/db/search?q=${tweak}`)
+			return data.json()
+		}
+		var data = await getData()
+		if (data.status === false) return message.reply("Error in finding tweak. Are you sure you spelled it correctly?")
+		var items = data.data.length
+		var currentPage = data.data[page - 1]
+		if (page <= 0) return message.reply("Invalid page number.")
+		if (page > items) return message.reply("Could not find that page!")
+		if (String(currentPage.Icon).includes("file:")) {
+			var icon = currentPage.repo.icon
+		} else {
+			var icon = currentPage.Icon
+		}
+		const embed = {
+			color: "#0064FF",
+			title: `Tweak Search for ${tweak} | Page ${page}`,
+			thumbnail: {
+				url: icon
+			},
+			fields: [
+				{
+					"name": "Name",
+					"value": currentPage.Name
+				},
+				{
+					"name": "Author",
+					"value": currentPage.Author
+				},
+				{
+					"name": "Repo",
+					"value": currentPage.repo.url
+				}
+			],
+			footer: {
+				text: `Page ${page}/${items} | Switch pages with [[${tweak}]] <number>\nPowered by Parcility`,
+			},
+		};
+		const buttons = new MessageActionRow()
+			.addComponents(
+				new MessageButton()
+					.setURL(currentPage.repo.url)
+					.setLabel('Repo')
+					.setStyle('LINK'),
+			);
+		message.reply({ embeds: [embed], components: [buttons] })
+	}
 });
 
 // Events
