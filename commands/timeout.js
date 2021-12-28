@@ -48,7 +48,7 @@ module.exports = {
 			]
 		};
 
-		await member.timeout(timeoutUntil, reason);
+		await member.timeout(interaction.options.getNumber('duration') * 1000 * 60 * 60 * 24, reason);
 		
 		interaction.guild.channels.cache.get(config.channels.logs).send({embeds: [embed]})
         member.send(`You were timed out in ${config.server_name}!\nReason: ${reason}\nDuration: ${interaction.options.getNumber('duration')} day(s)`)
