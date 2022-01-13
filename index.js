@@ -1,7 +1,6 @@
 const fs = require('fs');
-const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
+const { Client, Collection, Intents, MessageActionRow, MessageButton } = require('discord.js');
 const config = require('./config.json');
-const { SlashCommandBuilder } = require('@discordjs/builders');
 const fetch = require('node-fetch')
 const triggers = require("./triggers.json")
 const censored = require('./censored.json')
